@@ -80,6 +80,12 @@ describe("parseGymProfile", () => {
         ]),
     ],
     ["address.postcode", "30000", (p: Draft) => (p.address.postcode = "30000")],
+    [
+      "logo.src",
+      "//other.example/logo.svg",
+      (p: Draft) =>
+        (p.logo = { src: "//other.example/logo.svg", width: 1, height: 1 }),
+    ],
   ])("names the invalid field %s and its value", (field, value, change) => {
     const message = errorOf(variant(change));
     expect(message).toContain(`${field}:`);

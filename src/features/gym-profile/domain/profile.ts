@@ -51,7 +51,12 @@ function profileSchema(locales: readonly string[]) {
     description: translated(50, 160),
     logo: z
       .object({
-        src: z.string().startsWith("/"),
+        src: z
+          .string()
+          .regex(
+            /^\/(?!\/)\S+$/,
+            "must be a path in public/, e.g. /profiles/<id>/logo.svg",
+          ),
         width: z.number().int().positive(),
         height: z.number().int().positive(),
       })
