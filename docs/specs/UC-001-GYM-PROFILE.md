@@ -99,7 +99,7 @@ The address, phone, email and social links are placeholders on reserved or non-e
 - **Validation** uses `zod`, a new runtime dependency that UC-007 will reuse for form input. Custom rules sit on top of it: contrast, opening-hours ranges, and the required locales. The locales come in as a parameter, so the domain stays free of imports.
 - **Theme colours under the CSP.** The layout renders `<style nonce={nonce}>:root{--brand-…}</style>` with the per-request nonce from `x-nonce`. This needs no `unsafe-inline`; inline `style` attributes can't carry a nonce, so they aren't used. The values are validated `#RRGGBB`, so they can't inject CSS. Tailwind exposes them as `primary`, `accent`, `background` and `foreground`. The dark-mode override in `globals.css` is removed, because the validated contrast holds only for the profile's own pair.
 - **Accent is decorative only.** Its contrast isn't validated, so it must not be used for text.
-- **Logo.** `GymLogo` renders `next/image` with the gym name as alt text when the profile has a logo, otherwise a text wordmark. The home `h1` wraps `GymLogo`. UC-002 reuses it in the header.
+- **Logo.** `GymLogo` renders the optimized props from `getImageProps` (`next/image`) on a plain `<img>` with the gym name as alt text, otherwise a text wordmark. `<Image>` itself is not used because it adds an inline `style` attribute that the CSP blocks. The home `h1` wraps `GymLogo`. UC-002 reuses it in the header.
 - **Metadata.** `<title>` is the profile name. The meta description is the profile `description` for the page's locale. The `home.title`, `home.heading` and `home.description` dictionary keys are removed; `home.intro` stays.
 
 ### Components per layer
@@ -125,7 +125,7 @@ The address, phone, email and social links are placeholders on reserved or non-e
 | create | `src/features/gym-profile/ui/GymLogo.tsx` |
 | create | `src/profiles/index.ts`, `src/profiles/aare-boxing-club.json`, `src/profiles/example-gym.json` |
 | create | `public/profiles/example-gym/logo.svg` (second profile with a logo, used by E2E for AC2) |
-| create | `e2e/gym-profile.spec.ts` |
+| create | `e2e/gym-profile.spec.ts`, `e2e/servers.ts` (ports of both servers) |
 | change | `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx`, `src/app/globals.css` |
 | change | `src/i18n/dictionaries/{de,fr,en}.json` (remove keys that move to the profile) |
 | change | `next.config.ts`, `playwright.config.ts` (second `next start` with `GYM_PROFILE=example-gym` on port 3001, same build) |
@@ -146,7 +146,7 @@ There is no new processor and no personal data, and the risk tier is unchanged.
 **Tier 1 — SEO & quality**
 - [ ] A unique `<title>` and meta description per page and language
 - [ ] A canonical URL and `hreflang` on every page
-- [ ] Images are optimized: the logo goes through `next/image` with width and height; fonts are self-hosted (`next/font`)
+- [ ] Images are optimized: the logo uses `next/image` `getImageProps` with width and height; fonts are self-hosted (`next/font`)
 
 Tiers 2 and 3 have no applicable items (no CMS, booking, accounts or payments in this UC).
 
@@ -155,7 +155,7 @@ Tiers 2 and 3 have no applicable items (no CMS, booking, accounts or payments in
 |-----|----------------------------------|------|
 | AC1 | e2e | `gym-profile.spec.ts`: `/de`, `/fr` and `/en` show "Aare Boxing Club" in the `h1` and `<title>` |
 | AC2 | e2e | `gym-profile.spec.ts`: the port 3001 server (`example-gym`) shows its name, its logo `img[alt=<name>]` and its colours |
-| AC3 | e2e | `gym-profile.spec.ts`: the computed `--color-primary/accent/background/foreground` on `:root` equal the demo profile hex values |
+| AC3 | e2e | `gym-profile.spec.ts`: the computed `--brand-primary/accent/background/text` on `:root` and the body background and text colours equal the demo profile values |
 | AC4 | e2e | `gym-profile.spec.ts`: the demo `h1` contains the text wordmark and no `img` |
 | AC5 | unit | `profile.test.ts`: each required field removed → error names the profile and the field |
 | AC6 | unit | `profile.test.ts`: table of invalid values (colour, email, `http:` URL, bad time, overlap, start ≥ end, postcode) → error names the field and the value |

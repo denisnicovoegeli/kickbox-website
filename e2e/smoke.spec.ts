@@ -1,7 +1,13 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { exampleGymURL } from "./servers";
 
 const localePaths = ["/de", "/fr", "/en"];
+// Every page is also checked with the example gym's colours and logo.
+const pages = [
+  ...localePaths,
+  ...localePaths.map((path) => `${exampleGymURL}${path}`),
+];
 
 test("redirects / to the visitor's language", async ({ browser }) => {
   const context = await browser.newContext({ locale: "fr-CH" });
@@ -26,7 +32,7 @@ test("sends the security headers from CHECKLIST.md", async ({ request }) => {
   expect(headers["x-powered-by"]).toBeUndefined();
 });
 
-for (const path of localePaths) {
+for (const path of pages) {
   test(`${path} renders without CSP violations or serious a11y issues`, async ({
     page,
   }) => {

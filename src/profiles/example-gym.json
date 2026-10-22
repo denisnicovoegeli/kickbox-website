@@ -2,9 +2,9 @@
   "id": "example-gym",
   "name": "Example Boxing Gym",
   "description": {
-    "de": "Beispielprofil, das zeigt, wie sich die Website für ein anderes Gym anpassen lässt.",
-    "fr": "Profil d’exemple montrant comment adapter le site à une autre salle de boxe.",
-    "en": "Example profile showing how the website adapts to another boxing gym."
+    "de": "Example Boxing Gym zeigt, wie sich die Website für ein anderes Boxgym anpassen lässt.",
+    "fr": "Example Boxing Gym montre comment adapter le site à une autre salle de boxe.",
+    "en": "Example Boxing Gym shows how the website adapts to another boxing gym."
   },
   "logo": {
     "src": "/profiles/example-gym/logo.svg",

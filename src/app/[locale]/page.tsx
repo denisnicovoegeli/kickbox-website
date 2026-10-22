@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getGymProfile } from "@/features/gym-profile/gym-profile";
+import { GymLogo } from "@/features/gym-profile/ui/GymLogo";
 import { isLocale, languageTags, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -8,11 +10,11 @@ export async function generateMetadata({
 }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { home } = await getDictionary(locale);
+  const gym = getGymProfile(locale);
 
   return {
-    title: home.title,
-    description: home.description,
+    title: gym.name,
+    description: gym.description,
     alternates: {
       canonical: `/${locale}`,
       languages: Object.fromEntries(
@@ -26,10 +28,13 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const { home } = await getDictionary(locale);
+  const gym = getGymProfile(locale);
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-4 px-6 py-24">
-      <h1 className="text-4xl font-semibold tracking-tight">{home.heading}</h1>
+      <h1 className="text-4xl font-semibold tracking-tight break-words">
+        <GymLogo name={gym.name} logo={gym.logo} />
+      </h1>
       <p className="text-lg">{home.intro}</p>
     </main>
   );

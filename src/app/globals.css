@@ -1,25 +1,16 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* The --brand-* colours come from the gym profile (src/app/[locale]/layout.tsx). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-primary: var(--brand-primary);
+  --color-accent: var(--brand-accent);
+  --color-background: var(--brand-background);
+  --color-foreground: var(--brand-text);
   --font-sans: var(--font-geist-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--brand-background);
+  color: var(--brand-text);
   font-family: var(--font-sans), sans-serif;
 }
