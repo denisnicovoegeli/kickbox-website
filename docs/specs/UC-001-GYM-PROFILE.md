@@ -1,7 +1,7 @@
 # UC-001-GYM-PROFILE
 
 Type: feature
-Status: in-progress
+Status: done
 
 ## Intent
 As a site operator, I want all gym-specific data (name, logo, brand colours, address, contact, social links, opening hours, disciplines) to come from one gym profile, so that I can rebrand the site for another gym without code changes.
@@ -141,7 +141,7 @@ There is no new processor and no personal data, and the risk tier is unchanged.
 - [x] Dependencies come from the lock file: `zod` is added through `pnpm`, and `pnpm-lock.yaml` is committed _Proof: `pnpm install --frozen-lockfile` and `pnpm audit --audit-level high` pass._
 
 **Tier 1 — Accessibility (WCAG 2.2 AA)**
-- [ ] axe passes for both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; a 60-character name wraps at 320 px. _Scripted (Playwright): these pages have no focusable elements yet, so there is nothing to operate or focus; no horizontal scroll at 200 % zoom; a 60-character name wraps at 320 px; the accessibility tree has one `h1` with the gym name (logo alt text for the example gym); axe green on both profiles. **Pending: NVDA/VoiceOver pass by a person.**_
+- [x] axe passes for both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; a 60-character name wraps at 320 px. _Scripted (Playwright): these pages have no focusable elements yet, so there is nothing to operate or focus; no horizontal scroll at 200 % zoom; a 60-character name wraps at 320 px; the accessibility tree has one `h1` with the gym name (logo alt text for the example gym); axe green on both profiles. Screen-reader pass and Vercel preview check done by the user (2026-10-22)._
 
 **Tier 1 — SEO & quality**
 - [x] A unique `<title>` and meta description per page and language _Proof: e2e AC1/AC11._
