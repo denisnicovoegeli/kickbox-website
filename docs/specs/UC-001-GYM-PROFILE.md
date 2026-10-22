@@ -1,7 +1,7 @@
 # UC-001-GYM-PROFILE
 
 Type: feature
-Status: specified
+Status: designed
 
 ## Intent
 As a site operator, I want all gym-specific data (name, logo, brand colours, address, contact, social links, opening hours, disciplines) to come from one gym profile, so that I can rebrand the site for another gym without code changes.
@@ -25,6 +25,7 @@ As a site operator, I want all gym-specific data (name, logo, brand colours, add
 |-------|-------|
 | Id | `aare-boxing-club` |
 | Name | Aare Boxing Club |
+| Description | the three meta descriptions under SEO & Languages |
 | Logo | none (text wordmark) |
 | Colours | primary `#0E7490`, accent `#B91C1C`, background `#FFFFFF`, text `#111827` |
 | Address | Musterstrasse 1, 3000 Bern, Switzerland |
@@ -41,7 +42,8 @@ The address, phone, email and social links are placeholders on reserved or non-e
 |-------|----------|-----------------------|-------|
 | id | yes | no | lowercase kebab case, unique |
 | name | yes | no | 1–60 characters |
-| logo | no | no | image file in the profile; alt text is the gym name |
+| description | yes | yes | 50–160 characters; used as the meta description |
+| logo | no | no | image file with width and height; alt text is the gym name |
 | colours (primary, accent, background, text) | yes | no | hex colour `#RRGGBB` |
 | address (street, postcode, city, country) | yes | no | Swiss postcode is 4 digits |
 | phone | yes | no | international format `+41 …` |
@@ -68,7 +70,7 @@ The address, phone, email and social links are placeholders on reserved or non-e
 - [ ] **AC5** — Given a profile missing any required field, when it is validated, then validation fails with a message naming the profile and the missing field.
 - [ ] **AC6** — Given a profile with an invalid value (colour not `#RRGGBB`, invalid email, non-`https` social URL, malformed or overlapping opening-hours range, start not before end, postcode not 4 digits), when it is validated, then validation fails with a message naming the field and the value.
 - [ ] **AC7** — Given a profile whose text-on-background or primary-on-background contrast is below 4.5:1, when it is validated, then validation fails with a message naming the colour pair and its ratio.
-- [ ] **AC8** — Given a discipline whose name or description is missing in de, fr or en, when it is validated, then validation fails with a message naming the field and the language.
+- [ ] **AC8** — Given the profile description, or a discipline name or description, missing in de, fr or en, when it is validated, then validation fails with a message naming the field and the language.
 - [ ] **AC9** — Given `GYM_PROFILE` names an unknown profile, when the site is built, then the build fails with a message listing the available profile ids.
 - [ ] **AC10** — Given the demo profile, when it is read for the language `fr`, then it returns all fields, with the discipline names and descriptions in French, and the address, contact, social links and opening hours unchanged.
 - [ ] **AC11** — Given the demo profile, when the home page is checked in de, fr and en, then it has a `<title>` and meta description containing the gym name, a canonical URL and `hreflang` alternates.
@@ -83,19 +85,85 @@ The address, phone, email and social links are placeholders on reserved or non-e
 
 ## SEO & Languages
 - `<title>`: the gym name, the same in every language (later page UCs prepend their page name).
-- Meta description per language, containing the gym name:
+- Meta description per language, from the profile `description` (demo values):
   - de: "Boxtraining für alle Stufen im Aare Boxing Club in Bern."
   - fr: "Entraînement de boxe pour tous les niveaux à l’Aare Boxing Club à Berne."
   - en: "Boxing training for every level at Aare Boxing Club in Bern."
 - No structured data in this UC; `LocalBusiness` from the profile is UC-009.
 
 ## Design
-_Filled in Phase 2: components per layer and the files to touch._
+
+### Approach
+- **Profiles are data.** Each gym is one JSON file in `src/profiles/`, registered in `src/profiles/index.ts` (one import line per gym). Static imports bundle every profile, so it works on Vercel with no runtime file access. Adding a gym means adding data and one registry line, with no logic changes.
+- **Selection at runtime, validation at build.** `GYM_PROFILE` picks the profile when a request is served. `next.config.ts` validates **every** registered profile and the selected id when the config loads, so `next build` (and `next dev`) fail on any invalid profile. Because one build contains all profiles, the E2E suite can serve a second profile from the same build.
+- **Validation** uses `zod`, a new runtime dependency that UC-007 will reuse for form input. Custom rules sit on top of it: contrast, opening-hours ranges, and the required locales. The locales come in as a parameter, so the domain stays free of imports.
+- **Theme colours under the CSP.** The layout renders `<style nonce={nonce}>:root{--brand-…}</style>` with the per-request nonce from `x-nonce`. This needs no `unsafe-inline`; inline `style` attributes can't carry a nonce, so they aren't used. The values are validated `#RRGGBB`, so they can't inject CSS. Tailwind exposes them as `primary`, `accent`, `background` and `foreground`. The dark-mode override in `globals.css` is removed, because the validated contrast holds only for the profile's own pair.
+- **Accent is decorative only.** Its contrast isn't validated, so it must not be used for text.
+- **Logo.** `GymLogo` renders `next/image` with the gym name as alt text when the profile has a logo, otherwise a text wordmark. The home `h1` wraps `GymLogo`. UC-002 reuses it in the header.
+- **Metadata.** `<title>` is the profile name. The meta description is the profile `description` for the page's locale. The `home.title`, `home.heading` and `home.description` dictionary keys are removed; `home.intro` stays.
+
+### Components per layer
+| Layer | Component | Responsibility |
+|-------|-----------|----------------|
+| domain | `features/gym-profile/domain/profile.ts` | schema and types, `parseGymProfile(input, locales)` with field-named errors, `localizeProfile(profile, locale)` |
+| domain | `features/gym-profile/domain/contrast.ts` | WCAG relative luminance and contrast ratio |
+| adapter | `features/gym-profile/adapters/registry.ts` | `loadGymProfile(id, registry)`: unknown id → error listing the ids; `validateAllProfiles(registry)` for the build |
+| feature | `features/gym-profile/gym-profile.ts` (`server-only`) | `getGymProfile(locale)`: reads `GYM_PROFILE` (default `aare-boxing-club`), memoized per process |
+| ui | `features/gym-profile/ui/GymLogo.tsx` | logo image or wordmark |
+| app | `app/[locale]/layout.tsx`, `app/[locale]/page.tsx` | theme style tag, metadata and heading from the profile |
+| config | `next.config.ts` | build-time validation |
+
+### Files
+| Action | File |
+|--------|------|
+| add dep | `zod` |
+| create | `src/features/gym-profile/domain/profile.ts`, `profile.test.ts` |
+| create | `src/features/gym-profile/domain/contrast.ts`, `contrast.test.ts` |
+| create | `src/features/gym-profile/adapters/registry.ts`, `registry.test.ts` |
+| create | `src/features/gym-profile/gym-profile.ts` |
+| create | `src/features/gym-profile/build-validation.test.ts` (imports `next.config.ts`) |
+| create | `src/features/gym-profile/ui/GymLogo.tsx` |
+| create | `src/profiles/index.ts`, `src/profiles/aare-boxing-club.json`, `src/profiles/example-gym.json` |
+| create | `public/profiles/example-gym/logo.svg` (second profile with a logo, used by E2E for AC2) |
+| create | `e2e/gym-profile.spec.ts` |
+| change | `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx`, `src/app/globals.css` |
+| change | `src/i18n/dictionaries/{de,fr,en}.json` (remove keys that move to the profile) |
+| change | `next.config.ts`, `playwright.config.ts` (second `next start` with `GYM_PROFILE=example-gym` on port 3001, same build) |
+| change | `.env.example` (`GYM_PROFILE`), `docs/PROJECT.md` (Structure: `src/profiles/`) |
+
+There is no new processor and no personal data, and the risk tier is unchanged.
 
 ## Checklist
-_Filled in Phase 2: the items from `docs/CHECKLIST.md` that apply to this UC._
+**Tier 1 — Security**
+- [ ] CSP without `unsafe-inline`: the theme `<style>` uses the request nonce, and the existing header test plus the zero-console-errors check stay green
+- [ ] Input is validated against a schema: profiles are validated with `zod` at build and on load
+- [ ] No secrets in the client bundle: `GYM_PROFILE` is server-only (no `NEXT_PUBLIC_`), and the profile holds only public business data
+- [ ] Dependencies come from the lock file: `zod` is added through `pnpm`, and `pnpm-lock.yaml` is committed
+
+**Tier 1 — Accessibility (WCAG 2.2 AA)**
+- [ ] axe passes for both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; a 60-character name wraps at 320 px.
+
+**Tier 1 — SEO & quality**
+- [ ] A unique `<title>` and meta description per page and language
+- [ ] A canonical URL and `hreflang` on every page
+- [ ] Images are optimized: the logo goes through `next/image` with width and height; fonts are self-hosted (`next/font`)
+
+Tiers 2 and 3 have no applicable items (no CMS, booking, accounts or payments in this UC).
 
 ## Test Plan
 | AC  | Level (unit / integration / e2e) | Test |
 |-----|----------------------------------|------|
-| AC1 |                                  |      |
+| AC1 | e2e | `gym-profile.spec.ts`: `/de`, `/fr` and `/en` show "Aare Boxing Club" in the `h1` and `<title>` |
+| AC2 | e2e | `gym-profile.spec.ts`: the port 3001 server (`example-gym`) shows its name, its logo `img[alt=<name>]` and its colours |
+| AC3 | e2e | `gym-profile.spec.ts`: the computed `--color-primary/accent/background/foreground` on `:root` equal the demo profile hex values |
+| AC4 | e2e | `gym-profile.spec.ts`: the demo `h1` contains the text wordmark and no `img` |
+| AC5 | unit | `profile.test.ts`: each required field removed → error names the profile and the field |
+| AC6 | unit | `profile.test.ts`: table of invalid values (colour, email, `http:` URL, bad time, overlap, start ≥ end, postcode) → error names the field and the value |
+| AC7 | unit | `contrast.test.ts` (known ratios, e.g. black/white = 21) and `profile.test.ts`: a low-contrast pair → error names the pair and the ratio |
+| AC8 | unit | `profile.test.ts`: description or discipline text missing per locale → error names the field and the language |
+| AC9 | unit + integration | `registry.test.ts`: unknown id → error lists the ids; `build-validation.test.ts`: importing `next.config.ts` with `GYM_PROFILE=nope` throws |
+| AC10 | unit | `profile.test.ts`: `localizeProfile(demo, "fr")` returns French disciplines and unchanged contact, address, social links and hours |
+| AC11 | e2e | `gym-profile.spec.ts`: per locale, the title and meta description contain the name, and the canonical link and `hreflang` alternates are present |
+| AC12 | e2e + CI | `smoke.spec.ts` axe check (also run against the 3001 server) and `pnpm lighthouse` |
+| CSP nonce | e2e | `smoke.spec.ts`: the header test, plus no console errors (a blocked style would log a CSP violation) |
+| Manual a11y | manual | keyboard, focus, screen reader, 200 % zoom, 60-character name at 320 px; recorded in phase 4 |
