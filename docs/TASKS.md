@@ -5,16 +5,18 @@ Each UC's progress lives in its own `Status` field.
 
 ## Backlog
 
+### Customization
+- [ ] UC-001-gym-profile: one gym profile (name, logo, brand colors, address, contact, social links, opening hours, disciplines) that every page reads, so the site can be rebranded for another gym without code changes; the demo profile is the fictive "Aare Boxing Club" in Bern
+
 ### Public site
-- [ ] UC-001-site-shell: header with navigation, language switcher (de/fr/en), footer with contact, social links, Impressum and AGB links, and a custom 404 page
-- [ ] UC-002-home: home page introducing the gym, its disciplines (boxing, kickboxing, grappling, MMA), both locations and a call to action for a trial lesson
-- [ ] UC-003-training-times: training schedule per location (Ostermundigen, Aarwangen) by weekday, time and discipline
-- [ ] UC-004-prices: memberships and class passes per location, with prices and conditions
-- [ ] UC-005-trainers: trainer profiles with photo, disciplines and short bio
-- [ ] UC-006-trial-and-contact: trial lesson info (no registration needed), addresses with map facade, and a contact form that emails the gym (Resend)
-- [ ] UC-007-legal: Impressum, privacy policy (revDSG, all processors from PROJECT.md) and AGB
-- [ ] UC-008-seo: sitemap.xml, robots.txt, LocalBusiness structured data per location
-- [ ] UC-009-history: the gym's history
+- [ ] UC-002-site-shell: header with navigation, language switcher (de/fr/en), footer with contact, social links, Impressum and AGB links, and a custom 404 page
+- [ ] UC-003-home: home page introducing the gym, its classes (e.g. boxing, fitness boxing, kids boxing, sparring) and a call to action for a trial lesson
+- [ ] UC-004-schedule: weekly class schedule by weekday, time, class and level
+- [ ] UC-005-prices: memberships and class passes with prices and conditions
+- [ ] UC-006-coaches: coach profiles with photo, focus and short bio
+- [ ] UC-007-trial-and-contact: trial lesson info, address with map facade, and a contact form that emails the gym (Resend)
+- [ ] UC-008-legal: Impressum, privacy policy (revDSG, all processors from PROJECT.md) and AGB
+- [ ] UC-009-seo: sitemap.xml, robots.txt and LocalBusiness structured data from the gym profile
 - [ ] UC-010-gallery: photo gallery with optimized, lazy-loaded images
 
 ### Members
