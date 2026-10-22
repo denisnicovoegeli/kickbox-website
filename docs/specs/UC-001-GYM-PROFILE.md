@@ -85,7 +85,7 @@ The address, phone, email and social links are placeholders on reserved or non-e
 - `<title>`: the gym name, the same in every language (later page UCs prepend their page name).
 - Meta description per language, containing the gym name:
   - de: "Boxtraining für alle Stufen im Aare Boxing Club in Bern."
-  - fr: "Entraînement de boxe pour tous les niveaux à l'Aare Boxing Club à Berne."
+  - fr: "Entraînement de boxe pour tous les niveaux à l’Aare Boxing Club à Berne."
   - en: "Boxing training for every level at Aare Boxing Club in Bern."
 - No structured data in this UC; `LocalBusiness` from the profile is UC-009.
 
