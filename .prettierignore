@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+.next/
+.lighthouseci/
+playwright-report/
+test-results/
+docs/
+.claude/
+*.md

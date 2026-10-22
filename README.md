@@ -1,26 +1,30 @@
-# Website Template — AI-SDLC
+# Gladiators Fighting Gym — Website
 
-A spec-driven, test-first workflow for small-business websites, built for AI coding agents.
-It is stack-agnostic and ships on Vercel by default.
+Redesign of [gladiatorsfightinggym.ch](https://www.gladiatorsfightinggym.ch/): the gym, its classes, and online memberships and class passes with a member account.
+Next.js on Vercel, in German (default), French and English.
 
-## Start a new project
-1. Create a repo from this template (`gh repo create <name> --template <owner>/website-template --public --clone`).
-2. Install the prerequisites: Git, GitHub CLI (`gh auth login`), Node.js or your runtime, and the Vercel CLI.
-3. Run `/ai-sdlc-0-bootstrap` in Claude Code. It asks about the stack, risk tier and languages; scaffolds the app, CI and Dependabot; fills in `docs/PROJECT.md`; and protects `main`.
-4. Add use cases to `docs/TASKS.md`, then run `/ai-sdlc-1-specify` for the first one.
+## Setup
+Prerequisites: Node.js ≥ 24, pnpm, GitHub CLI and Vercel CLI.
+
+```sh
+pnpm install
+pnpm exec playwright install chromium
+cp .env.example .env.local   # optional: without keys, email goes to a fake sender
+pnpm dev                     # http://localhost:3000 → redirects to /de, /fr or /en
+```
+
+## Commands
+| Task | Command |
+|------|---------|
+| Lint + format check | `pnpm lint` (fix with `pnpm format`) |
+| Typecheck | `pnpm typecheck` |
+| Unit tests | `pnpm test` |
+| E2E + accessibility | `pnpm test:e2e` |
+| Lighthouse | `pnpm lighthouse` |
+| Dependency audit | `pnpm audit --audit-level high` |
+
+All of them run in CI and must pass before a PR can merge.
 
 ## Workflow
-Specify → Design → Develop → Validate → Deploy, one use case per branch and PR.
-Small changes take the fast path: branch → PR → CI → merge.
-
-| File | Purpose |
-|------|---------|
-| `AGENTS.md` | Rules and phase router for any agent |
-| `docs/PROJECT.md` | Stack, risk tier, quality gates, commands, processors |
-| `docs/CHECKLIST.md` | Security, privacy (revDSG) and SEO checks by risk tier |
-| `docs/TASKS.md` | Backlog, owned by you |
-| `docs/specs/` | One spec per use case or page |
-| `.claude/skills/` | Phase instructions |
-| `.claude/settings.json` | Blocks risky agent actions locally |
-
-Bootstrap replaces this README with the project's own.
+This repo follows the AI-SDLC in `AGENTS.md`: one use case per branch and PR, specified in `docs/specs/`, with the backlog in `docs/TASKS.md`.
+Stack, quality gates and processors are in `docs/PROJECT.md`; security, privacy and SEO checks in `docs/CHECKLIST.md`.
