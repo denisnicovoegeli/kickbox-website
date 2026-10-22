@@ -1,7 +1,7 @@
 # UC-001-GYM-PROFILE
 
 Type: feature
-Status: designed
+Status: in-progress
 
 ## Intent
 As a site operator, I want all gym-specific data (name, logo, brand colours, address, contact, social links, opening hours, disciplines) to come from one gym profile, so that I can rebrand the site for another gym without code changes.
