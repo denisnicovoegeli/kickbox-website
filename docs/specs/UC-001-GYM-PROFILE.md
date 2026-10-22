@@ -63,18 +63,18 @@ The address, phone, email and social links are placeholders on reserved or non-e
 - Long gym name (up to 60 characters) → the heading wraps without horizontal scrolling at 320 px width.
 
 ## Acceptance Criteria
-- [ ] **AC1** — Given `GYM_PROFILE` is unset, when a visitor opens `/de`, `/fr` and `/en`, then the home heading and the page `<title>` show "Aare Boxing Club".
-- [ ] **AC2** — Given `GYM_PROFILE` selects a second (test) profile with a different name, colours and a logo image, when the site is built and the home page is opened, then it shows that profile's name, logo (with the gym name as alt text) and colours, with no code changes.
-- [ ] **AC3** — Given the demo profile, when a visitor opens the home page, then the site's primary, accent, background and text theme colours equal the profile's colours.
-- [ ] **AC4** — Given a profile without a logo, when a visitor opens the home page, then a text wordmark with the gym name is shown and no broken image appears.
-- [ ] **AC5** — Given a profile missing any required field, when it is validated, then validation fails with a message naming the profile and the missing field.
-- [ ] **AC6** — Given a profile with an invalid value (colour not `#RRGGBB`, invalid email, non-`https` social URL, malformed or overlapping opening-hours range, start not before end, postcode not 4 digits), when it is validated, then validation fails with a message naming the field and the value.
-- [ ] **AC7** — Given a profile whose text-on-background or primary-on-background contrast is below 4.5:1, when it is validated, then validation fails with a message naming the colour pair and its ratio.
-- [ ] **AC8** — Given the profile description, or a discipline name or description, missing in de, fr or en, when it is validated, then validation fails with a message naming the field and the language.
-- [ ] **AC9** — Given `GYM_PROFILE` names an unknown profile, when the site is built, then the build fails with a message listing the available profile ids.
-- [ ] **AC10** — Given the demo profile, when it is read for the language `fr`, then it returns all fields, with the discipline names and descriptions in French, and the address, contact, social links and opening hours unchanged.
-- [ ] **AC11** — Given the demo profile, when the home page is checked in de, fr and en, then it has a `<title>` and meta description containing the gym name, a canonical URL and `hreflang` alternates.
-- [ ] **AC12** — Given the demo profile, when the quality gates run, then axe reports 0 serious or critical violations and Lighthouse meets the thresholds in `docs/PROJECT.md`.
+- [x] **AC1** — Given `GYM_PROFILE` is unset, when a visitor opens `/de`, `/fr` and `/en`, then the home heading and the page `<title>` show "Aare Boxing Club". _Proof: e2e `gym-profile.spec.ts` › `/de|fr|en shows the demo gym name and metadata`._
+- [x] **AC2** — Given `GYM_PROFILE` selects a second (test) profile with a different name, colours and a logo image, when the site is built and the home page is opened, then it shows that profile's name, logo (with the gym name as alt text) and colours, with no code changes. _Proof: e2e `gym-profile.spec.ts` › `with GYM_PROFILE=example-gym` (second server, same build)._
+- [x] **AC3** — Given the demo profile, when a visitor opens the home page, then the site's primary, accent, background and text theme colours equal the profile's colours. _Proof: e2e `gym-profile.spec.ts` › `applies the demo profile colours`._
+- [x] **AC4** — Given a profile without a logo, when a visitor opens the home page, then a text wordmark with the gym name is shown and no broken image appears. _Proof: e2e `gym-profile.spec.ts` › demo `h1` has text and no `img`._
+- [x] **AC5** — Given a profile missing any required field, when it is validated, then validation fails with a message naming the profile and the missing field. _Proof: unit `profile.test.ts` › `names the profile and the missing field …`._
+- [x] **AC6** — Given a profile with an invalid value (colour not `#RRGGBB`, invalid email, non-`https` social URL, malformed or overlapping opening-hours range, start not before end, postcode not 4 digits), when it is validated, then validation fails with a message naming the field and the value. _Proof: unit `profile.test.ts` › `names the invalid field … and its value` (incl. protocol-relative logo path)._
+- [x] **AC7** — Given a profile whose text-on-background or primary-on-background contrast is below 4.5:1, when it is validated, then validation fails with a message naming the colour pair and its ratio. _Proof: unit `contrast.test.ts` and `profile.test.ts` › `rejects low contrast …`._
+- [x] **AC8** — Given the profile description, or a discipline name or description, missing in de, fr or en, when it is validated, then validation fails with a message naming the field and the language. _Proof: unit `profile.test.ts` › `names the missing translation …`._
+- [x] **AC9** — Given `GYM_PROFILE` names an unknown profile, when the site is built, then the build fails with a message listing the available profile ids. _Proof: unit `registry.test.ts`, integration `build-validation.test.ts`; `GYM_PROFILE=nope pnpm build` fails with the id list._
+- [x] **AC10** — Given the demo profile, when it is read for the language `fr`, then it returns all fields, with the discipline names and descriptions in French, and the address, contact, social links and opening hours unchanged. _Proof: unit `profile.test.ts` › `localizeProfile`._
+- [x] **AC11** — Given the demo profile, when the home page is checked in de, fr and en, then it has a `<title>` and meta description containing the gym name, a canonical URL and `hreflang` alternates. _Proof: e2e `gym-profile.spec.ts` › title, description, canonical and `hreflang` per locale._
+- [x] **AC12** — Given the demo profile, when the quality gates run, then axe reports 0 serious or critical violations and Lighthouse meets the thresholds in `docs/PROJECT.md`. _Proof: e2e `smoke.spec.ts` axe on both profiles; `pnpm lighthouse` 0 failures locally and in CI._
 
 ## Out of Scope
 - An admin UI for editing profiles
@@ -135,18 +135,18 @@ There is no new processor and no personal data, and the risk tier is unchanged.
 
 ## Checklist
 **Tier 1 — Security**
-- [ ] CSP without `unsafe-inline`: the theme `<style>` uses the request nonce, and the existing header test plus the zero-console-errors check stay green
-- [ ] Input is validated against a schema: profiles are validated with `zod` at build and on load
-- [ ] No secrets in the client bundle: `GYM_PROFILE` is server-only (no `NEXT_PUBLIC_`), and the profile holds only public business data
-- [ ] Dependencies come from the lock file: `zod` is added through `pnpm`, and `pnpm-lock.yaml` is committed
+- [x] CSP without `unsafe-inline`: the theme `<style>` uses the request nonce, and the existing header test plus the zero-console-errors check stay green _Proof: e2e header test + zero console errors on all 6 pages (it caught `<Image>`'s inline style, fixed with `getImageProps`)._
+- [x] Input is validated against a schema: profiles are validated with `zod` at build and on load _Proof: unit tests AC5–AC8; build check in `next.config.ts`._
+- [x] No secrets in the client bundle: `GYM_PROFILE` is server-only (no `NEXT_PUBLIC_`), and the profile holds only public business data _Proof: diff review; client JS identical in size to `main` (569,574 bytes), no zod in `.next/static`._
+- [x] Dependencies come from the lock file: `zod` is added through `pnpm`, and `pnpm-lock.yaml` is committed _Proof: `pnpm install --frozen-lockfile` and `pnpm audit --audit-level high` pass._
 
 **Tier 1 — Accessibility (WCAG 2.2 AA)**
-- [ ] axe passes for both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; a 60-character name wraps at 320 px.
+- [ ] axe passes for both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; a 60-character name wraps at 320 px. _Scripted (Playwright): these pages have no focusable elements yet, so there is nothing to operate or focus; no horizontal scroll at 200 % zoom; a 60-character name wraps at 320 px; the accessibility tree has one `h1` with the gym name (logo alt text for the example gym); axe green on both profiles. **Pending: NVDA/VoiceOver pass by a person.**_
 
 **Tier 1 — SEO & quality**
-- [ ] A unique `<title>` and meta description per page and language
-- [ ] A canonical URL and `hreflang` on every page
-- [ ] Images are optimized: the logo uses `next/image` `getImageProps` with width and height; fonts are self-hosted (`next/font`)
+- [x] A unique `<title>` and meta description per page and language _Proof: e2e AC1/AC11._
+- [x] A canonical URL and `hreflang` on every page _Proof: e2e AC11._
+- [x] Images are optimized: the logo uses `next/image` `getImageProps` with width and height; fonts are self-hosted (`next/font`) _Proof: `GymLogo` uses `getImageProps` with width and height; `next/font` unchanged._
 
 Tiers 2 and 3 have no applicable items (no CMS, booking, accounts or payments in this UC).
 
