@@ -1,7 +1,7 @@
 | Audit | `pnpm audit --audit-level high` || Lighthouse | `pnpm lighthouse` (builds, then runs @lhci/cli via pnpm dlx) || Build | `pnpm build` || E2E | `pnpm test:e2e` (builds and starts the app) || Test | `pnpm test` || Typecheck | `pnpm typecheck` || Lint | `pnpm lint` (ESLint + Prettier check; fix with pnpm format) || Dev | `pnpm dev` || Install | `pnpm install` |# PROJECT.md
 
 ## Purpose
-Redesign of the website for [Gladiators Fighting Gym](https://www.gladiatorsfightinggym.ch/). Visitors learn about the gym and its classes; members buy memberships and class passes online and manage them in a personal account.
+Customizable website for boxing gyms, shown as a demo for a fictive gym in Bern ("Aare Boxing Club"). Visitors learn about the gym and its classes; members buy memberships and class passes online and manage them in a personal account. Each real gym gets its own branding, content and configuration from one gym profile, without code changes.
 
 ## Risk Tier
 **3** — see `docs/CHECKLIST.md`

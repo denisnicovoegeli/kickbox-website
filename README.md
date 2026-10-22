@@ -1,6 +1,7 @@
-# Gladiators Fighting Gym — Website
+# Boxing Gym Website
 
-Redesign of [gladiatorsfightinggym.ch](https://www.gladiatorsfightinggym.ch/): the gym, its classes, and online memberships and class passes with a member account.
+A customizable website for boxing gyms: the gym, its classes, and online memberships and class passes with a member account.
+The demo shows the fictive **Aare Boxing Club** in Bern; each real gym gets its own branding and content from one gym profile.
 Next.js on Vercel, in German (default), French and English.
 
 ## Setup
