@@ -38,7 +38,7 @@ Each page UC adds its own entry when it ships, so no entry links to a missing pa
 | 4 | Coaches | Coaches | Coachs | Coaches | UC-006 |
 | 5 | Gallery | Galerie | Galerie | Gallery | UC-010 |
 | 6 | Trial & Contact | Probetraining & Kontakt | Essai & contact | Trial & Contact | UC-007 |
-| — | Call to action "Trial lesson" (highlighted) | Probetraining | Cours d'essai | Trial lesson | UC-007 |
+| — | Call to action "Trial lesson" (highlighted) | Probetraining | Cours d’essai | Trial lesson | UC-007 |
 
 ### Footer legal links
 The Impressum, privacy policy and AGB links are added to the footer by UC-008, together with those pages. This UC ships without legal links.
@@ -53,8 +53,8 @@ The Impressum, privacy policy and AGB links are added to the footer by UC-008, t
 | Footer: contact heading | Kontakt | Contact | Contact |
 | Footer: social heading | Folgen Sie uns | Suivez-nous | Follow us |
 | 404 heading | Seite nicht gefunden | Page introuvable | Page not found |
-| 404 text | Diese Seite gibt es nicht (mehr). | Cette page n'existe pas (ou plus). | This page doesn't exist (anymore). |
-| 404 link | Zur Startseite | Retour à l'accueil | Back to home |
+| 404 text | Diese Seite gibt es nicht (mehr). | Cette page n’existe pas (ou plus). | This page doesn't exist (anymore). |
+| 404 link | Zur Startseite | Retour à l’accueil | Back to home |
 
 Language names in the switcher are always written in their own language (Deutsch, Français, English).
 
