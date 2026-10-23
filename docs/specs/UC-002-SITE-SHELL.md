@@ -1,7 +1,7 @@
 # UC-002-SITE-SHELL
 
 Type: feature
-Status: in-progress
+Status: done
 
 ## Intent
 As a visitor, I want a consistent header, footer and "not found" page on every page, so that I can find my way around, switch language, and reach the gym from anywhere on the site.
@@ -163,7 +163,7 @@ The approved exception was "the 404 page in Lighthouse with every threshold exce
 - [ ] The Impressum is linked from every page. **Deferred to UC-008** by decision; this UC leaves room for the links in the footer. It must be done before public go-live.
 
 **Tier 1 — Accessibility (WCAG 2.2 AA)**
-- [ ] axe passes on the home and 404 pages in every language and both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; this is the first UC with interactive elements. _Scripted (Playwright, 2026-10-23): keyboard-only at 375 px — skip link, logo, Menü, then (open) Start, Deutsch, Français, English, footer links, each with a visible outline; Enter opens the menu, Escape closes it, a language is chosen by keyboard; Tab past the open menu never leaves focus hidden behind it (2.4.11; 375, 640, 320 px). 200 % zoom (640 CSS px): no horizontal scroll on `/de` and `/fr/does-not-exist`, menu button shown. 60-character name at 320 px wraps in header and footer, no horizontal scroll. axe green. **Open: screen-reader pass (NVDA/VoiceOver) and Vercel preview check by the user.**_
+- [x] axe passes on the home and 404 pages in every language and both profiles. The manual keyboard, focus, screen-reader and 200 % zoom check is done; this is the first UC with interactive elements. _Scripted (Playwright, 2026-10-23): keyboard-only at 375 px — skip link, logo, Menü, then (open) Start, Deutsch, Français, English, footer links, each with a visible outline; Enter opens the menu, Escape closes it, a language is chosen by keyboard; Tab past the open menu never leaves focus hidden behind it (2.4.11; 375, 640, 320 px). 200 % zoom (640 CSS px): no horizontal scroll on `/de` and `/fr/does-not-exist`, menu button shown. 60-character name at 320 px wraps in header and footer, no horizontal scroll. axe green. Screen-reader pass (NVDA/VoiceOver) and Vercel preview check done by the user (2026-10-23)._
 
 **Tier 1 — SEO & quality**
 - [x] A unique `<title>` and meta description per page and language. The 404 page has a localized title; no description, because it isn't indexed. _Proof: e2e AC10 (localized 404 title); home metadata unchanged (UC-001 e2e)._
