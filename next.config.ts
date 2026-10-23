@@ -16,6 +16,8 @@ selectGymProfile(
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The 404 page for the dynamic [locale] root layout (app/global-not-found.tsx).
+  experimental: { globalNotFound: true },
   async headers() {
     return [{ source: "/:path*", headers: staticSecurityHeaders }];
   },

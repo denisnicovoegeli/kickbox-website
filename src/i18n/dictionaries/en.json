@@ -1,5 +1,21 @@
 {
   "home": {
     "intro": "The new website is under construction."
+  },
+  "shell": {
+    "skipLink": "Skip to content",
+    "mainNav": "Main navigation",
+    "menu": "Menu",
+    "language": "Language",
+    "contact": "Contact",
+    "social": "Follow us",
+    "nav": {
+      "home": "Home"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page doesn't exist (anymore).",
+    "homeLink": "Back to home"
   }
 }
