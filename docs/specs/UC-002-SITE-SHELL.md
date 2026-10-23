@@ -1,7 +1,7 @@
 # UC-002-SITE-SHELL
 
 Type: feature
-Status: designed
+Status: in-progress
 
 ## Intent
 As a visitor, I want a consistent header, footer and "not found" page on every page, so that I can find my way around, switch language, and reach the gym from anywhere on the site.
@@ -145,11 +145,11 @@ Language names in the switcher are always written in their own language (Deutsch
 | change | `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx` (drop `<main>`), `src/app/globals.css` (focus outline, popover styles) |
 | change | `src/proxy.ts` (`x-locale`), `src/i18n/dictionaries/{de,fr,en}.json` (`shell`, `notFound`) |
 | change | `e2e/smoke.spec.ts` (axe on 404 pages, both profiles), `lighthouserc.json` (add `/de/does-not-exist`) |
-| change | `docs/PROJECT.md` (Exceptions: 404 page SEO; **pending the user's approval**) |
+| change | `docs/PROJECT.md` (Exceptions: 404 page SEO, approved) |
 
 There are no new dependencies, processors or personal data, and the risk tier is unchanged.
 
-### Pending exception (needs approval)
+### Exception (approved by the user, 2026-10-23)
 Lighthouse SEO fails on any 404 page by design: the `http-status-code` audit fails, and `is-crawlable` fails because of `noindex`. Proposal: add the 404 page to Lighthouse with every threshold except the SEO category, which is recorded under Exceptions in `PROJECT.md` with that reason. If this isn't approved, the 404 page stays out of Lighthouse and only axe covers it.
 
 ## Checklist
@@ -185,7 +185,7 @@ Tiers 2 and 3 have no applicable items.
 | AC10 | e2e | per locale: `request.get` status 404; page shows header, footer, localized heading and text, home link; `meta[name=robots]` contains `noindex` |
 | AC11 | e2e | `/does-not-exist` with `fr-CH` lands on `/fr/does-not-exist` showing the French 404 |
 | AC12 | unit | `dictionaries.test.ts`: fr and en have exactly the de key set, with no empty strings |
-| AC13 | e2e + CI | `smoke.spec.ts` axe on home and 404 for both profiles; `pnpm lighthouse` incl. `/de/does-not-exist` (see the pending exception) |
+| AC13 | e2e + CI | `smoke.spec.ts` axe on home and 404 for both profiles; `pnpm lighthouse` incl. `/de/does-not-exist` (SEO excepted, see Exception) |
 | Edge: resize, link closes menu, click outside | e2e | `site-shell.spec.ts` |
 | Edge: long name at 320 px | manual | phase 4 |
 | Manual a11y | manual | keyboard-only flow incl. the mobile menu, focus visibility, NVDA/VoiceOver pass, 200 % zoom |
