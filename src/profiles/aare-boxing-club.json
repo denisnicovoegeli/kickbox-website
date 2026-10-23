@@ -1,0 +1,84 @@
+{
+  "id": "aare-boxing-club",
+  "name": "Aare Boxing Club",
+  "description": {
+    "de": "Boxtraining für alle Stufen im Aare Boxing Club in Bern.",
+    "fr": "Entraînement de boxe pour tous les niveaux à l’Aare Boxing Club à Berne.",
+    "en": "Boxing training for every level at Aare Boxing Club in Bern."
+  },
+  "colors": {
+    "primary": "#0E7490",
+    "accent": "#B91C1C",
+    "background": "#FFFFFF",
+    "text": "#111827"
+  },
+  "address": {
+    "street": "Musterstrasse 1",
+    "postcode": "3000",
+    "city": "Bern",
+    "country": "Switzerland"
+  },
+  "phone": "+41 31 000 00 00",
+  "email": "info@aare-boxing-club.example",
+  "socialLinks": [
+    {
+      "platform": "Instagram",
+      "url": "https://www.instagram.com/aare.boxing.club.example"
+    },
+    {
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/aare.boxing.club.example"
+    }
+  ],
+  "openingHours": {
+    "mon": [{ "opens": "07:00", "closes": "21:30" }],
+    "tue": [{ "opens": "07:00", "closes": "21:30" }],
+    "wed": [{ "opens": "07:00", "closes": "21:30" }],
+    "thu": [{ "opens": "07:00", "closes": "21:30" }],
+    "fri": [{ "opens": "07:00", "closes": "21:30" }],
+    "sat": [{ "opens": "09:00", "closes": "14:00" }],
+    "sun": []
+  },
+  "disciplines": [
+    {
+      "name": { "de": "Boxen", "fr": "Boxe", "en": "Boxing" },
+      "description": {
+        "de": "Technik, Kondition und Taktik im klassischen Boxen für Anfänger und Fortgeschrittene.",
+        "fr": "Technique, condition physique et tactique de la boxe anglaise, pour débutants et avancés.",
+        "en": "Technique, conditioning and tactics of classic boxing for beginners and advanced athletes."
+      }
+    },
+    {
+      "name": {
+        "de": "Fitnessboxen",
+        "fr": "Boxe fitness",
+        "en": "Fitness Boxing"
+      },
+      "description": {
+        "de": "Intensives Ganzkörpertraining mit Boxelementen, ohne Körperkontakt.",
+        "fr": "Entraînement complet et intensif avec des éléments de boxe, sans contact.",
+        "en": "Intense full-body workout with boxing elements and no contact."
+      }
+    },
+    {
+      "name": {
+        "de": "Kinderboxen",
+        "fr": "Boxe enfants",
+        "en": "Kids Boxing"
+      },
+      "description": {
+        "de": "Spielerisches Boxtraining für Kinder mit Fokus auf Koordination und Respekt.",
+        "fr": "Entraînement ludique pour les enfants, axé sur la coordination et le respect.",
+        "en": "Playful boxing training for children, focused on coordination and respect."
+      }
+    },
+    {
+      "name": { "de": "Sparring", "fr": "Sparring", "en": "Sparring" },
+      "description": {
+        "de": "Kontrolliertes Sparring mit Schutzausrüstung für erfahrene Mitglieder.",
+        "fr": "Sparring contrôlé avec équipement de protection pour les membres expérimentés.",
+        "en": "Controlled sparring with protective gear for experienced members."
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "example-gym",
+  "name": "Example Boxing Gym",
+  "description": {
+    "de": "Example Boxing Gym zeigt, wie sich die Website für ein anderes Boxgym anpassen lässt.",
+    "fr": "Example Boxing Gym montre comment adapter le site à une autre salle de boxe.",
+    "en": "Example Boxing Gym shows how the website adapts to another boxing gym."
+  },
+  "logo": {
+    "src": "/profiles/example-gym/logo.svg",
+    "width": 240,
+    "height": 64
+  },
+  "colors": {
+    "primary": "#7C2D12",
+    "accent": "#F59E0B",
+    "background": "#FFFBEB",
+    "text": "#1C1917"
+  },
+  "address": {
+    "street": "Beispielweg 2",
+    "postcode": "8000",
+    "city": "Zürich",
+    "country": "Switzerland"
+  },
+  "phone": "+41 44 000 00 00",
+  "email": "info@example-boxing-gym.example",
+  "openingHours": {
+    "mon": [
+      { "opens": "06:30", "closes": "12:00" },
+      { "opens": "16:00", "closes": "22:00" }
+    ],
+    "tue": [{ "opens": "16:00", "closes": "22:00" }],
+    "wed": [{ "opens": "16:00", "closes": "22:00" }],
+    "thu": [{ "opens": "16:00", "closes": "22:00" }],
+    "fri": [{ "opens": "16:00", "closes": "22:00" }],
+    "sat": [],
+    "sun": []
+  },
+  "disciplines": [
+    {
+      "name": { "de": "Boxen", "fr": "Boxe", "en": "Boxing" },
+      "description": {
+        "de": "Boxtraining für alle Stufen.",
+        "fr": "Entraînement de boxe pour tous les niveaux.",
+        "en": "Boxing training for every level."
+      }
+    }
+  ]
+}

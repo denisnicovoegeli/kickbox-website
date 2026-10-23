@@ -36,6 +36,7 @@ Feature folders with ports and adapters. Dependency rule: `app` â†’ `features` â
 |------|----------|
 | `src/app/[locale]/` | Routes; every page is under a locale segment |
 | `src/features/` | One folder per feature (`domain/`, `adapters/`), added by use cases |
+| `src/profiles/` | Gym profiles (one JSON per gym, registered in `index.ts`); `GYM_PROFILE` selects one, validated at build |
 | `src/services/` | Interfaces and adapters for email, auth and payments |
 | `src/i18n/` | Locale config, negotiation and dictionaries (`dictionaries/<locale>.json`) |
 | `src/security/` | CSP and security headers |
