@@ -1,4 +1,4 @@
-| Audit | `pnpm audit --audit-level high` || Lighthouse | `pnpm lighthouse` (builds, then runs @lhci/cli via pnpm dlx) || Build | `pnpm build` || E2E | `pnpm test:e2e` (builds and starts the app) || Test | `pnpm test` || Typecheck | `pnpm typecheck` || Lint | `pnpm lint` (ESLint + Prettier check; fix with pnpm format) || Dev | `pnpm dev` || Install | `pnpm install` |# PROJECT.md
+# PROJECT.md
 
 ## Purpose
 Customizable website for boxing gyms, shown as a demo for a fictive gym in Bern ("Aare Boxing Club"). Visitors learn about the gym and its classes; members buy memberships and class passes online and manage them in a personal account. Each real gym gets its own branding, content and configuration from one gym profile, without code changes.
@@ -73,7 +73,7 @@ Lighthouse runs in CI against a local production build: mobile profile, median o
 ### Exceptions
 | Page | Gate | Threshold | Reason |
 |------|------|-----------|--------|
-| 404 pages | Lighthouse | not run | Lighthouse aborts on a document with status 404 (`ERRORED_DOCUMENT_REQUEST`), so it cannot audit them. axe in the E2E suite covers their accessibility. UC-002; pending the user's approval. |
+| 404 pages | Lighthouse | not run | Lighthouse aborts on a document with status 404 (`ERRORED_DOCUMENT_REQUEST`), so it cannot audit them. axe in the E2E suite covers their accessibility. UC-002; approved by the user, 2026-10-23. |
 | all | Dependencies | ignore `GHSA-vfj7-8cjw-p6xm` (`braces`) | Dev-only, via `eslint-config-next`; no patched version exists. Remove from `package.json` → `pnpm.auditConfig` once one ships. |
 
 ## Privacy (Swiss revDSG)
