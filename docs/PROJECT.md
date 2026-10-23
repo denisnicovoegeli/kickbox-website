@@ -73,6 +73,7 @@ Lighthouse runs in CI against a local production build: mobile profile, median o
 ### Exceptions
 | Page | Gate | Threshold | Reason |
 |------|------|-----------|--------|
+| 404 pages | Lighthouse | not run | Lighthouse aborts on a document with status 404 (`ERRORED_DOCUMENT_REQUEST`), so it cannot audit them. axe in the E2E suite covers their accessibility. UC-002; pending the user's approval. |
 | all | Dependencies | ignore `GHSA-vfj7-8cjw-p6xm` (`braces`) | Dev-only, via `eslint-config-next`; no patched version exists. Remove from `package.json` → `pnpm.auditConfig` once one ships. |
 
 ## Privacy (Swiss revDSG)

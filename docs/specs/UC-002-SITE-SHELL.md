@@ -81,7 +81,7 @@ Language names in the switcher are always written in their own language (Deutsch
 - [ ] **AC10** — Given an unknown path `/<locale>/does-not-exist` for de, fr and en, when it is requested, then the response status is 404 and the page shows the header, footer, the 404 heading and text in that language, a link to `/<locale>`, and `<meta name="robots">` with `noindex`.
 - [ ] **AC11** — Given an unknown path without a language, when it is requested, then the visitor is redirected to `/<their language>/<path>` and sees the 404 page.
 - [ ] **AC12** — Given the dictionaries, when they are checked, then every shell text exists in de, fr and en.
-- [ ] **AC13** — Given the home and 404 pages in every language and both profiles, when the quality gates run, then axe reports 0 serious or critical violations and Lighthouse meets the thresholds in `docs/PROJECT.md` (home and 404 pages).
+- [ ] **AC13** — Given the home and 404 pages in every language and both profiles, when the quality gates run, then axe reports 0 serious or critical violations; Lighthouse meets the thresholds in `docs/PROJECT.md` on the home pages (Lighthouse cannot audit a 404 response, see Exception).
 
 ## Out of Scope
 - The content pages behind the other navigation entries (UC-003 to UC-010)
@@ -109,11 +109,12 @@ Language names in the switcher are always written in their own language (Deutsch
   - `SiteMenu` (client) wraps the popover and closes it when the path changes or the viewport reaches 768 px.
   - The toggle itself still works without JavaScript.
 - **Navigation links** use `next/link`. **Language links** are plain `<a>` elements, so a language switch loads a full page and `<html lang>`, the metadata and the server-rendered content all update.
-- **Localized 404.**
-  - `[locale]/[...missing]/page.tsx` calls `notFound()`, and `[locale]/not-found.tsx` renders inside the locale layout, so the header and footer are present.
-  - Next.js returns status 404 (`notFound()` runs before streaming) and injects `robots: noindex`.
-  - `not-found.tsx` gets no props, so `src/proxy.ts` adds an `x-locale` request header for paths that start with a locale, and `not-found.tsx` reads it. It falls back to the default locale for paths the proxy skips, i.e. those with a file extension.
-  - The 404 `<title>` comes from `generateMetadata` in `not-found.tsx`.
+- **Localized 404: `app/global-not-found.tsx`** (changed in phase 3).
+  - The first design (`[locale]/[...missing]/page.tsx` calling `notFound()` plus `[locale]/not-found.tsx`) returned status 404, but the server sent Next.js's empty error shell (`<html id="__next_error__">`) and the whole page was rendered only in the browser. With a dynamic root layout, a `not-found` boundary under it is only applied on the client. The Next.js docs recommend `global-not-found.tsx` for exactly this case.
+  - `global-not-found.tsx` (flag `experimental.globalNotFound`) handles every unmatched URL. It is fully server-rendered with status 404, the request nonce, and `robots: noindex` injected by Next.js.
+  - It renders the same document as the locale layout through `SiteDocument` (html/head/body, brand colours, skip link, header, footer), so both stay identical.
+  - It gets no params, so `src/proxy.ts` adds an `x-locale` request header for paths that start with a locale, read by `getRequestLocale()`; paths the proxy skips (with a file extension) fall back to the default locale.
+  - The 404 `<title>` comes from its `generateMetadata`.
 - **Focus indicator.** A global `:focus-visible` outline in `--brand-text` colour, offset 2 px. Its contrast against the background is at least 4.5:1, guaranteed by UC-001 validation, so it meets the 3:1 non-text minimum.
 - **Footer.**
   - Server component reading `getGymProfile(locale)`.
@@ -131,7 +132,8 @@ Language names in the switcher are always written in their own language (Deutsch
 | ui (client) | `features/site-shell/ui/MainNav.tsx` | nav landmark, `aria-current="page"` |
 | ui (client) | `features/site-shell/ui/LanguageSwitcher.tsx` | `<a lang hrefLang>` per locale, `aria-current="true"` on the current one |
 | ui (server) | `features/site-shell/ui/SiteFooter.tsx` | address, `tel:`, `mailto:`, social links, copyright |
-| app | `[locale]/layout.tsx`, `[locale]/page.tsx`, `[locale]/not-found.tsx`, `[locale]/[...missing]/page.tsx` | shell composition, 404 |
+| ui (server) | `features/site-shell/ui/SiteDocument.tsx` | html/head/body, brand colours, skip link, header, `main`, footer |
+| app | `[locale]/layout.tsx`, `[locale]/page.tsx`, `global-not-found.tsx` | shell composition, 404 |
 | proxy | `src/proxy.ts` | `x-locale` request header |
 
 ### Files
@@ -139,18 +141,18 @@ Language names in the switcher are always written in their own language (Deutsch
 |--------|------|
 | create | `src/features/site-shell/domain/navigation.ts`, `navigation.test.ts` |
 | create | `src/features/site-shell/ui/{SiteHeader,SiteMenu,MainNav,LanguageSwitcher,SiteFooter}.tsx` |
-| create | `src/app/[locale]/not-found.tsx`, `src/app/[locale]/[...missing]/page.tsx` |
+| create | `src/app/global-not-found.tsx`, `src/features/site-shell/ui/SiteDocument.tsx`, `src/i18n/request-locale.ts` |
 | create | `src/i18n/dictionaries.test.ts` (key parity across locales) |
 | create | `e2e/site-shell.spec.ts` |
 | change | `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx` (drop `<main>`), `src/app/globals.css` (focus outline, popover styles) |
-| change | `src/proxy.ts` (`x-locale`), `src/i18n/dictionaries/{de,fr,en}.json` (`shell`, `notFound`) |
-| change | `e2e/smoke.spec.ts` (axe on 404 pages, both profiles), `lighthouserc.json` (add `/de/does-not-exist`) |
-| change | `docs/PROJECT.md` (Exceptions: 404 page SEO, approved) |
+| change | `src/proxy.ts` (`x-locale`), `src/i18n/config.ts` (`languageNames`), `src/i18n/dictionaries/{de,fr,en}.json` (`shell`, `notFound`), `next.config.ts` (`experimental.globalNotFound`) |
+| change | `e2e/smoke.spec.ts` (axe on 404 pages, both profiles) |
+| change | `docs/PROJECT.md` (Exceptions: 404 page not in Lighthouse; **pending approval**) |
 
 There are no new dependencies, processors or personal data, and the risk tier is unchanged.
 
-### Exception (approved by the user, 2026-10-23)
-Lighthouse SEO fails on any 404 page by design: the `http-status-code` audit fails, and `is-crawlable` fails because of `noindex`. Proposal: add the 404 page to Lighthouse with every threshold except the SEO category, which is recorded under Exceptions in `PROJECT.md` with that reason. If this isn't approved, the 404 page stays out of Lighthouse and only axe covers it.
+### Exception (revised in phase 3, pending the user's approval)
+The approved exception was "the 404 page in Lighthouse with every threshold except SEO". In phase 3, Lighthouse turned out to abort on any document that returns 404 (`ERRORED_DOCUMENT_REQUEST`), so no 404 page can be audited at all. Revised: the 404 page is not run through Lighthouse; axe in the E2E suite covers its accessibility (de/fr/en, both profiles). This is the fallback named in the design.
 
 ## Checklist
 **Tier 1 — Security**
@@ -185,7 +187,7 @@ Tiers 2 and 3 have no applicable items.
 | AC10 | e2e | per locale: `request.get` status 404; page shows header, footer, localized heading and text, home link; `meta[name=robots]` contains `noindex` |
 | AC11 | e2e | `/does-not-exist` with `fr-CH` lands on `/fr/does-not-exist` showing the French 404 |
 | AC12 | unit | `dictionaries.test.ts`: fr and en have exactly the de key set, with no empty strings |
-| AC13 | e2e + CI | `smoke.spec.ts` axe on home and 404 for both profiles; `pnpm lighthouse` incl. `/de/does-not-exist` (SEO excepted, see Exception) |
+| AC13 | e2e + CI | `smoke.spec.ts` axe on home and 404 for both profiles; `pnpm lighthouse` on the home pages (404 excepted, see Exception) |
 | Edge: resize, link closes menu, click outside | e2e | `site-shell.spec.ts` |
 | Edge: long name at 320 px | manual | phase 4 |
 | Manual a11y | manual | keyboard-only flow incl. the mobile menu, focus visibility, NVDA/VoiceOver pass, 200 % zoom |
