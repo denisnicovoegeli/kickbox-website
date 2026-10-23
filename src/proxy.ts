@@ -18,6 +18,8 @@ export function proxy(request: NextRequest) {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
+  // not-found.tsx gets no params, so it reads the locale from here.
+  requestHeaders.set("x-locale", firstSegment);
   requestHeaders.set("Content-Security-Policy", csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });

@@ -14,3 +14,60 @@ body {
   color: var(--brand-text);
   font-family: var(--font-sans), sans-serif;
 }
+
+/* Text on background has at least 4.5:1 contrast (UC-001 validation). */
+:focus-visible {
+  outline: 2px solid var(--brand-text);
+  outline-offset: 2px;
+}
+
+/* The skip link's target; focusing it needs no ring around the page. */
+main:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  background: var(--brand-background);
+  color: var(--brand-text);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Below 48rem a popover panel under the header; from 48rem shown inline. */
+.site-menu {
+  inset: 4.5rem 0 auto;
+  width: 100%;
+  margin: 0;
+  padding: 1.5rem;
+  border: 0;
+  border-block: 1px solid color-mix(in srgb, var(--brand-text) 15%, transparent);
+  background: var(--brand-background);
+  color: var(--brand-text);
+}
+
+.site-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (width >= 48rem) {
+  .site-menu {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    overflow: visible;
+  }
+}

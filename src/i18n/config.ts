@@ -9,6 +9,13 @@ export const languageTags: Record<Locale, string> = {
   en: "en",
 };
 
+/** Each language named in itself, for the language switcher. */
+export const languageNames: Record<Locale, string> = {
+  de: "Deutsch",
+  fr: "Français",
+  en: "English",
+};
+
 export function isLocale(value: string): value is Locale {
   return (locales as readonly string[]).includes(value);
 }

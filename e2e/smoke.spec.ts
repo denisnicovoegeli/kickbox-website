@@ -3,10 +3,15 @@ import { expect, test } from "@playwright/test";
 import { exampleGymURL } from "./servers";
 
 const localePaths = ["/de", "/fr", "/en"];
+const notFoundPaths = localePaths.map((path) => `${path}/does-not-exist`);
 // Every page is also checked with the example gym's colours and logo.
+const withExampleGym = (paths: string[]) => [
+  ...paths,
+  ...paths.map((path) => `${exampleGymURL}${path}`),
+];
 const pages = [
-  ...localePaths,
-  ...localePaths.map((path) => `${exampleGymURL}${path}`),
+  ...withExampleGym(localePaths).map((path) => ({ path, notFound: false })),
+  ...withExampleGym(notFoundPaths).map((path) => ({ path, notFound: true })),
 ];
 
 test("redirects / to the visitor's language", async ({ browser }) => {
@@ -32,20 +37,24 @@ test("sends the security headers from CHECKLIST.md", async ({ request }) => {
   expect(headers["x-powered-by"]).toBeUndefined();
 });
 
-for (const path of pages) {
+for (const { path, notFound } of pages) {
   test(`${path} renders without CSP violations or serious a11y issues`, async ({
     page,
   }) => {
     const errors: string[] = [];
     page.on("console", (msg) => {
-      if (msg.type() === "error") errors.push(msg.text());
+      // A 404 page's own status is logged as an error; anything else counts.
+      const ownStatus =
+        notFound && msg.location().url.endsWith(path) && /404/.test(msg.text());
+      if (msg.type() === "error" && !ownStatus) errors.push(msg.text());
     });
 
     await page.goto(path);
     await expect(page.locator("h1")).toBeVisible();
+    // 404 pages are noindex, so they have no hreflang alternates.
     await expect(
       page.locator(`link[rel="alternate"][hreflang="fr-CH"]`),
-    ).toHaveCount(1);
+    ).toHaveCount(notFound ? 0 : 1);
     expect(errors).toEqual([]);
 
     const { violations } = await new AxeBuilder({ page })
