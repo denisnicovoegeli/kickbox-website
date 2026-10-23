@@ -1,5 +1,21 @@
 {
   "home": {
     "intro": "Le nouveau site est en construction."
+  },
+  "shell": {
+    "skipLink": "Aller au contenu",
+    "mainNav": "Navigation principale",
+    "menu": "Menu",
+    "language": "Langue",
+    "contact": "Contact",
+    "social": "Suivez-nous",
+    "nav": {
+      "home": "Accueil"
+    }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "text": "Cette page n’existe pas (ou plus).",
+    "homeLink": "Retour à l’accueil"
   }
 }
