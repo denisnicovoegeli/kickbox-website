@@ -11,7 +11,12 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const { notFound } = await getDictionary(locale);
-  return { title: `${notFound.title} | ${getGymProfile(locale).name}` };
+  return {
+    title: `${notFound.title} | ${getGymProfile(locale).name}`,
+    // Next.js adds noindex only when it falls back to this page itself; on
+    // Vercel the platform routes to /_not-found directly and it is missing.
+    robots: { index: false },
+  };
 }
 
 export default async function GlobalNotFound() {
