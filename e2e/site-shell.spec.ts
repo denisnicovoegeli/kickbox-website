@@ -77,10 +77,13 @@ for (const locale of locales) {
     ).toHaveAttribute("href", `/${locale}`);
     await expect(page.getByRole("banner")).toBeVisible();
     await expect(page.getByRole("contentinfo")).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-      "content",
-      /noindex/,
+    // In the server HTML, so crawlers see it. Locally Next.js adds its own
+    // identical tag next to the one from generateMetadata.
+    const robots = (await response?.text())?.match(
+      /<meta name="robots"[^>]*>/g,
     );
+    expect(robots?.length).toBeGreaterThan(0);
+    for (const tag of robots ?? []) expect(tag).toContain("noindex");
   });
 }
 
